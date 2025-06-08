@@ -35,7 +35,7 @@ const corsOptions = {
     allowedHeaders: ['Content-Type', 'Authorization']
 }
 app.use(cors(corsOptions));
-const requestLogger = (req,res,next) => {
+const requestLogger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
 };
