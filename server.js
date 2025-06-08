@@ -12,6 +12,7 @@ const path = require('path');
 const os = require('os');
 const { file } = require('pdfkit');
 const port = 8080;
+require('dotenv').config();
 
 const app = express();
 app.use(express.urlencoded({ extended: true }));
@@ -35,10 +36,10 @@ app.use(cors(corsOptions));
 
 
 const db = mysql.createConnection({
-    host: "localhost",
-    user: "root",
-    password: "",
-    database: "master_barber",
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_DATABASE || "master_barber",
 })
 
 db.connect((err) => {
