@@ -23,16 +23,24 @@ app.use('/perfil', express.static(path.join(__dirname, './uploads/perfil')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
+
+const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
+
+
 const corsOptions = {
-    origin: '*',
+    origin: FRONTEND_URL,
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     optionSuccessStatus: 200,
     allowedHeaders: ['Content-Type', 'Authorization']
 }
-
 app.use(cors(corsOptions));
+const requestLogger = (req,res,next) => {
+    console.log(`${req.method} ${req.url}`);
+    next();
+};
 
+app.use(requestLogger);
 
 
 const db = mysql.createConnection({
