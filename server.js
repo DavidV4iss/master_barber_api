@@ -24,28 +24,12 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 
 
-const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
 
-
-const allowedOrigins = process.env.FRONTEND_ORIGINS
-    ? process.env.FRONTEND_ORIGINS.split(',').map(origin => origin.trim())
-    : ['http://localhost:8080'];
-
-const corsOptions = {
-    origin: function (origin, callback) {
-        if (!origin || allowedOrigins.includes(origin)) {
-            callback(null, true);
-        } else {
-            callback(new Error('No permitido por CORS'));
-        }
-    },
-    credentials: true,
-    methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
-    optionSuccessStatus: 200,
-    allowedHeaders: ['Content-Type', 'Authorization']
-};
-
-app.use(cors(corsOptions));
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true
+}));
 
 
 
