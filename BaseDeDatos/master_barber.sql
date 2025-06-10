@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.1
+-- version 4.7.1
 -- https://www.phpmyadmin.net/
 --
--- Servidor: 127.0.0.1
--- Tiempo de generación: 08-06-2025 a las 05:54:06
--- Versión del servidor: 10.4.32-MariaDB
--- Versión de PHP: 8.2.12
+-- Servidor: masterbarber.cy7sgui0w3vd.us-east-1.rds.amazonaws.com
+-- Tiempo de generación: 10-06-2025 a las 04:19:12
+-- Versión del servidor: 8.0.41
+-- Versión de PHP: 7.0.33-0ubuntu0.16.04.16
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -28,19 +29,11 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `calificaciones` (
-  `id` int(11) NOT NULL,
-  `usuario_id` int(11) NOT NULL,
-  `puntuacion` int(11) DEFAULT NULL CHECK (`puntuacion` between 1 and 5),
-  `comentario` text DEFAULT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `calificaciones`
---
-
-INSERT INTO `calificaciones` (`id`, `usuario_id`, `puntuacion`, `comentario`) VALUES
-(102, 64, 5, ''),
-(103, 103, 5, '');
+  `id` int NOT NULL,
+  `usuario_id` int NOT NULL,
+  `puntuacion` int DEFAULT NULL,
+  `comentario` text COLLATE utf8mb4_general_ci
+) ;
 
 -- --------------------------------------------------------
 
@@ -49,8 +42,8 @@ INSERT INTO `calificaciones` (`id`, `usuario_id`, `puntuacion`, `comentario`) VA
 --
 
 CREATE TABLE `categoria_producto` (
-  `id_categoria_producto` int(255) NOT NULL,
-  `categoria` varchar(255) NOT NULL
+  `id_categoria_producto` int NOT NULL,
+  `categoria` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -69,15 +62,15 @@ INSERT INTO `categoria_producto` (`id_categoria_producto`, `categoria`) VALUES
 --
 
 CREATE TABLE `inventario` (
-  `id_producto` int(255) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `descripcion_P` varchar(255) NOT NULL,
-  `cantidad` int(255) NOT NULL,
-  `id_categoria_producto` int(255) NOT NULL,
-  `proveedor` varchar(255) NOT NULL,
-  `PrecioUnitario` int(255) NOT NULL,
+  `id_producto` int NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `descripcion_P` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `cantidad` int NOT NULL,
+  `id_categoria_producto` int NOT NULL,
+  `proveedor` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `PrecioUnitario` int NOT NULL,
   `fecha_venta` datetime DEFAULT NULL,
-  `Foto` varchar(255) DEFAULT NULL
+  `Foto` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -99,19 +92,11 @@ INSERT INTO `inventario` (`id_producto`, `nombre`, `descripcion_P`, `cantidad`, 
 --
 
 CREATE TABLE `notificaciones` (
-  `id_notificacion` int(11) NOT NULL,
-  `cliente_id` int(11) NOT NULL,
-  `mensaje` text NOT NULL,
-  `fecha` timestamp NOT NULL DEFAULT current_timestamp()
+  `id_notificacion` int NOT NULL,
+  `cliente_id` int NOT NULL,
+  `mensaje` text COLLATE utf8mb4_general_ci NOT NULL,
+  `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `notificaciones`
---
-
-INSERT INTO `notificaciones` (`id_notificacion`, `cliente_id`, `mensaje`, `fecha`) VALUES
-(74, 64, 'El estado de tu reserva ha sido actualizado a: Aceptada. Servicio: Corte premium, Fecha:7/6/2025, 9:00:00 p. m.', '0000-00-00 00:00:00'),
-(75, 64, 'El estado de tu reserva ha sido actualizado a: Aceptada. Servicio: Corte premium, Fecha:7/6/2025, 9:00:00 p. m.', '0000-00-00 00:00:00');
 
 -- --------------------------------------------------------
 
@@ -120,21 +105,14 @@ INSERT INTO `notificaciones` (`id_notificacion`, `cliente_id`, `mensaje`, `fecha
 --
 
 CREATE TABLE `reservas` (
-  `id_reserva` int(11) NOT NULL,
-  `cliente_id` int(11) NOT NULL,
-  `barbero_id` int(11) NOT NULL,
-  `servicio` int(255) NOT NULL,
+  `id_reserva` int NOT NULL,
+  `cliente_id` int NOT NULL,
+  `barbero_id` int NOT NULL,
+  `servicio` int NOT NULL,
   `fecha` datetime NOT NULL,
-  `estado` varchar(50) NOT NULL,
-  `observacion` varchar(255) NOT NULL
+  `estado` varchar(50) COLLATE utf8mb4_general_ci NOT NULL,
+  `observacion` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
-
---
--- Volcado de datos para la tabla `reservas`
---
-
-INSERT INTO `reservas` (`id_reserva`, `cliente_id`, `barbero_id`, `servicio`, `fecha`, `estado`, `observacion`) VALUES
-(161, 64, 111, 2, '2025-06-07 21:00:00', 'Aceptada', '');
 
 -- --------------------------------------------------------
 
@@ -143,8 +121,8 @@ INSERT INTO `reservas` (`id_reserva`, `cliente_id`, `barbero_id`, `servicio`, `f
 --
 
 CREATE TABLE `rol` (
-  `id_rol` int(255) NOT NULL,
-  `nombre_rol` varchar(55) NOT NULL
+  `id_rol` int NOT NULL,
+  `nombre_rol` varchar(55) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -163,10 +141,10 @@ INSERT INTO `rol` (`id_rol`, `nombre_rol`) VALUES
 --
 
 CREATE TABLE `tipo_servicio` (
-  `id_tipo_servicio` int(255) NOT NULL,
-  `nombre` varchar(255) NOT NULL,
-  `descripcion_S` varchar(255) NOT NULL,
-  `precio` varchar(255) NOT NULL
+  `id_tipo_servicio` int NOT NULL,
+  `nombre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `descripcion_S` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `precio` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -184,17 +162,17 @@ INSERT INTO `tipo_servicio` (`id_tipo_servicio`, `nombre`, `descripcion_S`, `pre
 --
 
 CREATE TABLE `usuarios` (
-  `id_usuario` int(255) NOT NULL,
-  `nombre_usuario` varchar(255) NOT NULL,
-  `email` varchar(55) NOT NULL,
-  `nit` int(55) NOT NULL,
-  `telefono` varchar(55) NOT NULL,
-  `contrasena` varchar(255) NOT NULL,
-  `id_rol` int(255) NOT NULL,
-  `user_reset_code` varchar(7) DEFAULT NULL,
+  `id_usuario` int NOT NULL,
+  `nombre_usuario` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `email` varchar(55) COLLATE utf8mb4_general_ci NOT NULL,
+  `nit` int NOT NULL,
+  `telefono` varchar(55) COLLATE utf8mb4_general_ci NOT NULL,
+  `contrasena` varchar(255) COLLATE utf8mb4_general_ci NOT NULL,
+  `id_rol` int NOT NULL,
+  `user_reset_code` varchar(7) COLLATE utf8mb4_general_ci DEFAULT NULL,
   `user_reset_code_expiration` datetime DEFAULT NULL,
-  `Foto` varchar(255) DEFAULT NULL,
-  `descripcion` varchar(255) NOT NULL
+  `Foto` varchar(255) COLLATE utf8mb4_general_ci DEFAULT NULL,
+  `descripcion` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -202,11 +180,12 @@ CREATE TABLE `usuarios` (
 --
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre_usuario`, `email`, `nit`, `telefono`, `contrasena`, `id_rol`, `user_reset_code`, `user_reset_code_expiration`, `Foto`, `descripcion`) VALUES
-(6, 'ADMINISTRADOR', 'Admin@gmail.com', 1028662004, '3142758305', '$2a$10$gKkjGOeNlRvXzyePlVJq1.r/9Y.F6.f.UROSSUNuM7Sjv1xkZyRo.', 1, NULL, NULL, '1749342599800-MB3.JPG', ''),
+(6, 'ADMINISTRADOR', 'Admin@gmail.com', 1028662004, '3142758305', '$2a$10$gKkjGOeNlRvXzyePlVJq1.r/9Y.F6.f.UROSSUNuM7Sjv1xkZyRo.', 1, NULL, NULL, '1749472486072-MB3.JPG', ''),
 (64, 'Usuario 1', 'Usuario@gmail.com', 1028662003, '3107877174', '$2a$10$T8tSncl7F6gquU0V2FJ1HO/dSe5XUH9nZmT8KmuHqJJPSY4w7ta4S', 3, '157515', '2025-05-14 20:20:34', '1749342707742-LOGO.png', ''),
-(103, 'Fidel', 'fideljoseespi10@gmail.com', 1028662008, '3142758305', '$2a$10$qJbPaiWZNzICUs23wYEoXOEe94sZHlkAFwKGPd2b.Uq.iBdBYdp02', 3, NULL, NULL, NULL, ''),
+(103, 'Fidel', 'fideljoseespi10@gmail.com', 1028662008, '3142758305', '$2a$10$XlUPDnbS9Wwz.PLSy5rLk.1ETw/UNrZqdWJnpajM2jYxUqUpdwJiK', 3, NULL, NULL, NULL, ''),
 (111, 'BARBERO', 'barbero@gmail.com', 0, '', '$2a$10$ZWUAq4p0hH4N5jGj9FhdLucnHPBSmylzQBrZORspKW.YylI5RVqti', 2, NULL, NULL, 'barbero_1748927210558-B1.JPG', 'Cortes Perfilados , Accesoria En Imagen Buen Uso De Las Maquinas Y El Ambinte'),
-(121, 'Prueba', 'prueba@gmail.com', 1023665985, '3142754579', '$2a$10$HYfmCWGW3z3yEMYHZy/PYO6DeDvDC8/Ug93KxgO/fJ7CX3lZxAHc2', 3, NULL, NULL, NULL, '');
+(122, 'BarberoDos', 'barbero2@gmail.com', 0, '', '$2a$10$L2vwKMNIkfICANHi/nR3FeZPpy.JSluZNzMn9p70o1h0KCek8JoZe', 2, NULL, NULL, 'barbero_1749528531102-venom.jpg', 'Cortes bellos'),
+(123, 'BARBEROTRES', 'barbero3@gmail.com', 0, '', '$2a$10$0AXMxi2oLHReBqiVh7jkn.GniIfp.LOyTiXzlRhntZJ9PGkldf5Cu', 2, NULL, NULL, 'barbero_1749528566612-B3.JPG', 'Cortes elegantes');
 
 -- --------------------------------------------------------
 
@@ -215,12 +194,12 @@ INSERT INTO `usuarios` (`id_usuario`, `nombre_usuario`, `email`, `nit`, `telefon
 --
 
 CREATE TABLE `ventas` (
-  `id` int(11) NOT NULL,
-  `id_producto` int(11) NOT NULL,
-  `cantidad` int(11) NOT NULL,
+  `id` int NOT NULL,
+  `id_producto` int NOT NULL,
+  `cantidad` int NOT NULL,
   `fecha` datetime DEFAULT NULL,
   `PrecioUnitario` decimal(10,2) NOT NULL,
-  `nombre` varchar(255) NOT NULL
+  `nombre` varchar(255) COLLATE utf8mb4_general_ci NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -228,21 +207,21 @@ CREATE TABLE `ventas` (
 --
 
 INSERT INTO `ventas` (`id`, `id_producto`, `cantidad`, `fecha`, `PrecioUnitario`, `nombre`) VALUES
-(163, 90, 1, '2025-06-03 04:18:48', 700000.00, 'Atomizador'),
-(164, 91, 1, '2025-06-03 04:18:48', 700000.00, 'Locion Desinfectante'),
-(165, 92, 1, '2025-06-03 04:18:48', 700000.00, 'Gel Para Afeitar'),
-(166, 93, 1, '2025-06-03 04:18:48', 700000.00, 'Maquina Para Barberia'),
-(167, 94, 1, '2025-06-03 04:18:48', 700000.00, 'Porta Cuchillas'),
-(168, 95, 1, '2025-06-03 04:18:48', 700000.00, 'Polvos Texturizantes'),
-(169, 90, 10, '2025-06-03 04:39:36', 700000.00, 'Atomizador'),
-(170, 91, 3, '2025-06-03 04:39:43', 700000.00, 'Locion Desinfectante'),
-(171, 92, 2, '2025-06-03 04:39:43', 700000.00, 'Gel Para Afeitar'),
-(172, 95, 1, '2025-06-03 04:39:43', 700000.00, 'Polvos Texturizantes'),
-(173, 94, 2, '2025-06-03 04:39:43', 700000.00, 'Porta Cuchillas'),
-(174, 93, 1, '2025-06-03 04:39:43', 700000.00, 'Maquina Para Barberia'),
-(175, 94, 7, '2025-06-03 04:39:49', 700000.00, 'Porta Cuchillas'),
-(176, 91, 1, '2025-06-03 04:39:49', 700000.00, 'Locion Desinfectante'),
-(177, 92, 1, '2025-06-03 04:39:49', 700000.00, 'Gel Para Afeitar');
+(163, 90, 1, '2025-06-03 04:18:48', '700000.00', 'Atomizador'),
+(164, 91, 1, '2025-06-03 04:18:48', '700000.00', 'Locion Desinfectante'),
+(165, 92, 1, '2025-06-03 04:18:48', '700000.00', 'Gel Para Afeitar'),
+(166, 93, 1, '2025-06-03 04:18:48', '700000.00', 'Maquina Para Barberia'),
+(167, 94, 1, '2025-06-03 04:18:48', '700000.00', 'Porta Cuchillas'),
+(168, 95, 1, '2025-06-03 04:18:48', '700000.00', 'Polvos Texturizantes'),
+(169, 90, 10, '2025-06-03 04:39:36', '700000.00', 'Atomizador'),
+(170, 91, 3, '2025-06-03 04:39:43', '700000.00', 'Locion Desinfectante'),
+(171, 92, 2, '2025-06-03 04:39:43', '700000.00', 'Gel Para Afeitar'),
+(172, 95, 1, '2025-06-03 04:39:43', '700000.00', 'Polvos Texturizantes'),
+(173, 94, 2, '2025-06-03 04:39:43', '700000.00', 'Porta Cuchillas'),
+(174, 93, 1, '2025-06-03 04:39:43', '700000.00', 'Maquina Para Barberia'),
+(175, 94, 7, '2025-06-03 04:39:49', '700000.00', 'Porta Cuchillas'),
+(176, 91, 1, '2025-06-03 04:39:49', '700000.00', 'Locion Desinfectante'),
+(177, 92, 1, '2025-06-03 04:39:49', '700000.00', 'Gel Para Afeitar');
 
 --
 -- Índices para tablas volcadas
@@ -317,44 +296,37 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=104;
-
+  MODIFY `id` int NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT de la tabla `categoria_producto`
 --
 ALTER TABLE `categoria_producto`
-  MODIFY `id_categoria_producto` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
-
+  MODIFY `id_categoria_producto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=5;
 --
 -- AUTO_INCREMENT de la tabla `inventario`
 --
 ALTER TABLE `inventario`
-  MODIFY `id_producto` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=96;
-
+  MODIFY `id_producto` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=97;
 --
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=76;
-
+  MODIFY `id_notificacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=162;
-
+  MODIFY `id_reserva` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int(255) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=122;
-
+  MODIFY `id_usuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
 ALTER TABLE `ventas`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
-
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=178;
 --
 -- Restricciones para tablas volcadas
 --
