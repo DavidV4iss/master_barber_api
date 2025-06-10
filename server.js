@@ -27,14 +27,28 @@ app.use(bodyParser.json());
 const FRONTEND_URL = process.env.FRONTEND_URL || 'http://localhost:8080';
 
 
+const allowedOrigins = process.env.FRONTEND_ORIGINS
+    ? process.env.FRONTEND_ORIGINS.split(',').map(origin => origin.trim())
+    : ['http://localhost:8080'];
+
 const corsOptions = {
-    origin: FRONTEND_URL,
+    origin: function (origin, callback) {
+        if (!origin || allowedOrigins.includes(origin)) {
+            callback(null, true);
+        } else {
+            callback(new Error('No permitido por CORS'));
+        }
+    },
     credentials: true,
     methods: 'GET,HEAD,PUT,PATCH,POST,DELETE',
     optionSuccessStatus: 200,
     allowedHeaders: ['Content-Type', 'Authorization']
-}
+};
+
 app.use(cors(corsOptions));
+
+
+
 const requestLogger = (req, res, next) => {
     console.log(`${req.method} ${req.url}`);
     next();
@@ -931,9 +945,9 @@ app.get('/GetServicios', (req, res) => {
 
 app.post('/CrearReservas', async (req, res) => {
     const { cliente_id, barbero_id, fecha, estado, servicio, observacion } = req.body;
+    console.log(req.body);
 
     try {
-        // Validar máximo 3 reservas activas por cliente por día
         const fechaSoloDia = moment(fecha).format('YYYY-MM-DD');
         const q = `
         SELECT COUNT(*) AS total FROM reservas 
@@ -952,7 +966,6 @@ app.post('/CrearReservas', async (req, res) => {
             return res.status(400).json({ message: 'Solo puedes hacer 3 reservas por día.' });
         }
 
-        // Validar hora ocupada
         const reservaExistente = await new Promise((resolve, reject) => {
             db.query(
                 'SELECT * FROM reservas WHERE barbero_id = ? AND fecha = ?',
