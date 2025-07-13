@@ -25,14 +25,14 @@ app.use(bodyParser.json());
 
 
 
-const corsOptions = {
-    origin: 'https://main.d1j40mvhytd5nm.amplifyapp.com',
-    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true
-};
+}));
 
-app.use(cors(corsOptions));
-app.options('*', cors(corsOptions));
+app.options('*', cors());
+
 
 
 
