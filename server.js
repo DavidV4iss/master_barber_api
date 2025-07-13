@@ -27,10 +27,12 @@ app.use(bodyParser.json());
 
 app.use(cors({
     origin: '*',
-    methods: ['GET','POST','PATCH','PUT','DELETE'],
+    methods: ['GET', 'POST', 'PATCH', 'PUT', 'DELETE'],
     credentials: true
 }));
 
+
+app.options('*', cors());
 
 
 
@@ -1283,6 +1285,84 @@ app.post('/GuardarVentas', (req, res) => {
     });
 });
 // FIN VENTAS
+
+
+
+// NOTAS DE VOZ POR SI ACASO
+app.use('/notasVoz', express.static(path.join(__dirname, './uploads/notasVoz')));
+
+const storageNotas = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, './uploads/notasVoz'),
+    filename: (req, file, cb) => cb(null, `nota-${Date.now()}-${file.originalname}`),
+});
+const uploadNota = multer({ storage: storageNotas });
+
+app.post('/uploadNotaVoz', uploadNota.single('audio'), (req, res) => {
+    const { usuario_id, reserva_id } = req.body;
+    const file = req.file;
+
+    if (!file) return res.status(400).send('No se recibió ningún archivo de audio');
+
+    const nombreArchivo = file.filename;
+    const q = 'INSERT INTO notas_voz (nombre_archivo, usuario_id, reserva_id) VALUES (?, ?, ?)';
+    db.query(q, [nombreArchivo, usuario_id, reserva_id], (err) => {
+        if (err) return res.status(500).send('Error al guardar en la base de datos');
+        res.status(200).json({ message: 'Nota de voz guardada', filename: nombreArchivo });
+    });
+});
+
+app.get('/notasVoz/:reserva_id', (req, res) => {
+    const { reserva_id } = req.params;
+    const q = 'SELECT * FROM notas_voz WHERE reserva_id = ?';
+    db.query(q, [reserva_id], (err, results) => {
+        if (err) return res.status(500).send('Error en el servidor');
+        res.status(200).json(results);
+    });
+});
+
+
+
+
+const borrarArchivoNota = async (filename) => {
+    try {
+        const filePath = path.join(__dirname, './uploads/notasVoz', filename);
+        await fs.promises.unlink(filePath);
+    } catch (err) {
+        console.error('Error al eliminar el archivo de nota de voz:', err.message);
+    }
+};
+
+app.delete('/deleteNotaVoz/:id', (req, res) => {
+    const id = req.params.id;
+
+    db.query('SELECT nombre_archivo FROM notas_voz WHERE id = ?', [id], async (err, results) => {
+        if (err) return res.status(500).send('Error en el servidor al buscar la nota');
+
+        if (results.length === 0) return res.status(404).send('Nota de voz no encontrada');
+
+        const filename = results[0].nombre_archivo;
+
+        await borrarArchivoNota(filename);
+
+        db.query('DELETE FROM notas_voz WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).send('Error al eliminar la nota de la base de datos');
+            return res.status(200).json({ message: 'Nota de voz eliminada correctamente' });
+        });
+    });
+});
+
+//FIN NOTAS DE VOZ
+
+
+
+
+
+
+
+
+
+
+
 
 
 app.get('/', (req, res) => {
