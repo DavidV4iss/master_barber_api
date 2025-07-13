@@ -1107,17 +1107,40 @@ app.patch('/UpdateReservasEstado/:id', (req, res) => {
                     to: email,
                     subject: 'Actualización del estado de tu reserva',
                     html: `
-                        <div style="background-color: #f8f9fa; padding: 20px; font-family: Arial, sans-serif;">
-                            <h2 style="color: #343a40;">Actualización de tu Reserva</h2>
-                            <p>Hola,</p>
-                            <p>Te informamos que el estado de tu reserva ha sido actualizado a: <strong>${nuevoEstado}</strong>.</p>
-                            <p>Detalles de la reserva:</p>
-                            <ul>
-                                <li><strong>Servicio:</strong> ${servicioNombre}</li>
-                                <li><strong>Fecha:</strong> ${new Date(reserva.fecha).toLocaleString()}</li>
-                            </ul>
-                            <p>Gracias por confiar en Master Barber.</p>
-                        </div>
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 30px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333;">
+  <h2 style="color: #2c3e50; margin-bottom: 20px;">✨ Actualización de tu Reserva</h2>
+
+  <p style="font-size: 16px; margin-bottom: 15px;">Hola,</p>
+
+  <p style="font-size: 16px; margin-bottom: 20px;">
+    Te informamos que el estado de tu reserva ha sido actualizado a:
+    <strong style="color: #27ae60;">${nuevoEstado}</strong>.
+  </p>
+
+  <div style="background-color: #f4f6f8; border-left: 4px solid #27ae60; padding: 15px 20px; margin-bottom: 20px; border-radius: 5px;">
+    <p style="margin: 0; font-size: 15px;">
+      <strong>🛠 Servicio:</strong> ${servicioNombre}<br>
+      <strong>📅 Fecha:</strong> ${new Date(reserva.fecha).toLocaleString()}
+    </p>
+  </div>
+
+  <p style="font-size: 15px; margin-bottom: 10px;">Gracias por confiar en <strong>Master Barber</strong>.</p>
+  <p style="font-size: 16px; font-weight: bold; color: #2c3e50;">¡Te esperamos!</p>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="https://tusitio.com/reservas" target="_blank" style="display: inline-block; background-color: #27ae60; color: #fff; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px;">
+      Ver mis reservas
+    </a>
+  </div>
+
+  <hr style="margin: 30px 0; border: none; border-top: 1px solid #eaeaea;" />
+
+  <p style="font-size: 12px; text-align: center; color: #999;">
+    Este mensaje fue enviado automáticamente. Por favor, no respondas a este correo.
+  </p>
+</div>
+
+
                     `
                 };
 
