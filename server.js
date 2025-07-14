@@ -12,6 +12,8 @@ const path = require('path');
 const os = require('os');
 const { file } = require('pdfkit');
 const port = 8080;
+const PDFDocument = require('pdfkit');
+
 require('dotenv').config();
 
 const app = express();
@@ -27,7 +29,7 @@ app.use(bodyParser.json());
 
 app.use(cors({
     origin: '*',
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH'],
     allowedHeaders: ['Content-Type', 'Authorization'],
     credentials: true
 }))
@@ -1342,6 +1344,17 @@ app.get('/notasVoz/:reserva_id', (req, res) => {
     });
 });
 
+app.get('/notasVozUsuario/:usuario_id', (req, res) => {
+    const { usuario_id } = req.params;
+    const q = 'SELECT * FROM notas_voz WHERE usuario_id = ? ORDER BY fecha DESC';
+
+    db.query(q, [usuario_id], (err, results) => {
+        if (err) return res.status(500).send('Error al obtener notas');
+        res.status(200).json(results);
+    });
+});
+
+
 
 
 
@@ -1374,6 +1387,107 @@ app.delete('/deleteNotaVoz/:id', (req, res) => {
 });
 
 //FIN NOTAS DE VOZ
+
+
+
+
+
+
+app.get('/generarFactura/:id_reserva', (req, res) => {
+    const id = req.params.id_reserva;
+    const numeroFactura = `MB-${new Date().getFullYear()}-${String(id).padStart(6, '0')}`;
+
+    const q = `
+        SELECT r.*, 
+               u.nombre_usuario AS nombre_cliente, 
+               u.email AS email,
+               s.nombre AS servicio_nombre,
+               s.precio AS precio_servicio,
+               b.nombre_usuario AS nombre_barbero
+        FROM reservas r 
+        JOIN usuarios u ON r.cliente_id = u.id_usuario
+        JOIN tipo_servicio s ON r.servicio = s.id_tipo_servicio
+        JOIN usuarios b ON r.barbero_id = b.id_usuario
+        WHERE r.id_reserva = ?
+    `;
+
+    db.query(q, [id], (err, results) => {
+        if (err || results.length === 0) {
+            console.error(err);
+            return res.status(500).send("Error al generar la factura");
+        }
+
+        const reserva = results[0];
+
+        const doc = new PDFDocument({ margin: 50 });
+
+        // Forzar descarga
+        res.setHeader('Content-Disposition', `attachment; filename=factura_${numeroFactura}.pdf`);
+        res.setHeader('Content-Type', 'application/pdf');
+        doc.pipe(res);
+
+        // FONDO NEGRO
+        doc.rect(0, 0, doc.page.width, doc.page.height).fill('#000');
+
+        // LOGO (opcional, puedes ajustar el color del logo si es necesario)
+        const logoPath = path.join(__dirname, './uploads/LOGO.png');
+        if (fs.existsSync(logoPath)) {
+            doc.image(logoPath, doc.page.width / 2 - 50, 20, { width: 100 });
+        }
+
+        // IMPORTANTE: Cambia el color de la fuente a blanco antes de escribir cualquier texto
+        doc.fillColor('#fff');
+
+        doc.moveDown(8); // Baja el título
+
+        // TÍTULO
+        doc.fontSize(22).font('Helvetica-Bold')
+            .text('Master Barber - Factura de Reserva', {
+                align: 'center',
+                underline: false
+            });
+
+        doc.moveDown(1.5);
+        doc.strokeColor('#d4af37').lineWidth(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
+        doc.moveDown();
+
+        // INFORMACIÓN
+        doc.fontSize(13).font('Helvetica');
+
+        const info = [
+            [`Factura Nº:`, numeroFactura],
+            [`Cliente:`, reserva.nombre_cliente],
+            [`Email:`, reserva.email],
+            [`Barbero:`, reserva.nombre_barbero],
+            [`Servicio:`, reserva.servicio_nombre],
+            [`Precio:`, `${Number(reserva.precio_servicio).toLocaleString('es-CO')}`],
+            [`FECHA Y HORA DE LA RESERVA:`, new Date(reserva.fecha).toLocaleString('es-CO')],
+            [`Estado:`, reserva.estado]
+        ];
+
+        info.forEach(([label, value]) => {
+            doc.font('Helvetica-Bold').text(label, { continued: true }).font('Helvetica').text(` ${value}`);
+        });
+
+        // AGRADECIMIENTO
+        doc.moveDown(2);
+        doc.fontSize(15).font('Helvetica-Bold')
+            .text('¡Gracias por confiar en Master Barber! 💈', { align: 'center' });
+
+        // PIE DE PÁGINA
+        doc.moveDown(2);
+        doc.fontSize(10).font('Helvetica')
+            .text('Master Barber - Calle 123 #45-67 - Bogotá, Colombia', { align: 'center' });
+        doc.text('Tel: +57 300 123 4567 | Email: contacto@masterbarber.com', { align: 'center' });
+
+        doc.end();
+    });
+})
+
+
+
+
+
 
 
 
