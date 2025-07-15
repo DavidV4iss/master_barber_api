@@ -1421,26 +1421,21 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
 
         const doc = new PDFDocument({ margin: 50 });
 
-        // Forzar descarga
         res.setHeader('Content-Disposition', `attachment; filename=factura_${numeroFactura}.pdf`);
         res.setHeader('Content-Type', 'application/pdf');
         doc.pipe(res);
 
-        // FONDO NEGRO
         doc.rect(0, 0, doc.page.width, doc.page.height).fill('#000');
 
-        // LOGO (opcional, puedes ajustar el color del logo si es necesario)
         const logoPath = path.join(__dirname, './uploads/LOGO.png');
         if (fs.existsSync(logoPath)) {
             doc.image(logoPath, doc.page.width / 2 - 50, 20, { width: 100 });
         }
 
-        // IMPORTANTE: Cambia el color de la fuente a blanco antes de escribir cualquier texto
         doc.fillColor('#fff');
 
-        doc.moveDown(8); // Baja el título
+        doc.moveDown(8); 
 
-        // TÍTULO
         doc.fontSize(22).font('Helvetica-Bold')
             .text('Master Barber - Factura de Reserva', {
                 align: 'center',
@@ -1451,7 +1446,6 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
         doc.strokeColor('#d4af37').lineWidth(1).moveTo(50, doc.y).lineTo(550, doc.y).stroke();
         doc.moveDown();
 
-        // INFORMACIÓN
         doc.fontSize(13).font('Helvetica');
 
         const info = [
@@ -1469,12 +1463,10 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
             doc.font('Helvetica-Bold').text(label, { continued: true }).font('Helvetica').text(` ${value}`);
         });
 
-        // AGRADECIMIENTO
         doc.moveDown(2);
         doc.fontSize(15).font('Helvetica-Bold')
             .text('¡Gracias por confiar en Master Barber! 💈', { align: 'center' });
 
-        // PIE DE PÁGINA
         doc.moveDown(2);
         doc.fontSize(10).font('Helvetica')
             .text('Master Barber - Calle 123 #45-67 - Bogotá, Colombia', { align: 'center' });
