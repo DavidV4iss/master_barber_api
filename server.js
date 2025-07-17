@@ -866,7 +866,7 @@ app.get('/traerCalificacionesUsuario/:id', (req, res) => {
     });
 });
 
-app.patch('/CancelarReservaCliente/:id', (req, res) => {
+app.put('/CancelarReservaCliente/:id', (req, res) => {
     const id = req.params.id;
     db.query('SELECT estado FROM reservas WHERE id_reserva = ?', [id], (err, results) => {
         if (err) return res.status(500).json({ error: 'Error en el servidor' });
@@ -1057,7 +1057,7 @@ app.get('/GetReservasCliente/:id', (req, res) => {
     });
 });
 
-app.patch('/UpdateReservasEstado/:id', (req, res) => {
+app.put('/UpdateReservasEstado/:id', (req, res) => {
     const id = req.params.id;
     const nuevoEstado = req.body.estado;
 
@@ -1411,3 +1411,6 @@ app.listen(port, '0.0.0.0', () => {
     console.log(`- Local:    http://localhost:${port}`);
     console.log(`- Red:      http://${localIP}:${port}`);
 });
+
+
+// CAMBIAR PATCH DE /CancelarReservaCliente/:id Y '/UpdateReservasEstado/:id' A PUT PERO EN EL FRONTEND
