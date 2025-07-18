@@ -1313,78 +1313,78 @@ app.post('/GuardarVentas', (req, res) => {
 
 
 // NOTAS DE VOZ POR SI ACASO
-// app.use('/notasVoz', express.static(path.join(__dirname, './uploads/notasVoz')));
+app.use('/notasVoz', express.static(path.join(__dirname, './uploads/notasVoz')));
 
-// const storageNotas = multer.diskStorage({
-//     destination: (req, file, cb) => cb(null, './uploads/notasVoz'),
-//     filename: (req, file, cb) => cb(null, `nota-${Date.now()}-${file.originalname}`),
-// });
-// const uploadNota = multer({ storage: storageNotas });
+const storageNotas = multer.diskStorage({
+    destination: (req, file, cb) => cb(null, './uploads/notasVoz'),
+    filename: (req, file, cb) => cb(null, `nota-${Date.now()}-${file.originalname}`),
+});
+const uploadNota = multer({ storage: storageNotas });
 
-// app.post('/uploadNotaVoz', uploadNota.single('audio'), (req, res) => {
-//     const { usuario_id, reserva_id } = req.body;
-//     const file = req.file;
+app.post('/uploadNotaVoz', uploadNota.single('audio'), (req, res) => {
+    const { usuario_id, reserva_id } = req.body;
+    const file = req.file;
 
-//     if (!file) return res.status(400).send('No se recibió ningún archivo de audio');
+    if (!file) return res.status(400).send('No se recibió ningún archivo de audio');
 
-//     const nombreArchivo = file.filename;
-//     const q = 'INSERT INTO notas_voz (nombre_archivo, usuario_id, reserva_id) VALUES (?, ?, ?)';
-//     db.query(q, [nombreArchivo, usuario_id, reserva_id], (err) => {
-//         if (err) return res.status(500).send('Error al guardar en la base de datos');
-//         res.status(200).json({ message: 'Nota de voz guardada', filename: nombreArchivo });
-//     });
-// });
+    const nombreArchivo = file.filename;
+    const q = 'INSERT INTO notas_voz (nombre_archivo, usuario_id, reserva_id) VALUES (?, ?, ?)';
+    db.query(q, [nombreArchivo, usuario_id, reserva_id], (err) => {
+        if (err) return res.status(500).send('Error al guardar en la base de datos');
+        res.status(200).json({ message: 'Nota de voz guardada', filename: nombreArchivo });
+    });
+});
 
-// app.get('/notasVoz/:reserva_id', (req, res) => {
-//     const { reserva_id } = req.params;
-//     const q = 'SELECT * FROM notas_voz WHERE reserva_id = ?';
-//     db.query(q, [reserva_id], (err, results) => {
-//         if (err) return res.status(500).send('Error en el servidor');
-//         res.status(200).json(results);
-//     });
-// });
+app.get('/notasVoz/:reserva_id', (req, res) => {
+    const { reserva_id } = req.params;
+    const q = 'SELECT * FROM notas_voz WHERE reserva_id = ?';
+    db.query(q, [reserva_id], (err, results) => {
+        if (err) return res.status(500).send('Error en el servidor');
+        res.status(200).json(results);
+    });
+});
 
-// app.get('/notasVozUsuario/:usuario_id', (req, res) => {
-//     const { usuario_id } = req.params;
-//     const q = 'SELECT * FROM notas_voz WHERE usuario_id = ? ORDER BY fecha DESC';
+app.get('/notasVozUsuario/:usuario_id', (req, res) => {
+    const { usuario_id } = req.params;
+    const q = 'SELECT * FROM notas_voz WHERE usuario_id = ? ORDER BY fecha DESC';
 
-//     db.query(q, [usuario_id], (err, results) => {
-//         if (err) return res.status(500).send('Error al obtener notas');
-//         res.status(200).json(results);
-//     });
-// });
-
-
+    db.query(q, [usuario_id], (err, results) => {
+        if (err) return res.status(500).send('Error al obtener notas');
+        res.status(200).json(results);
+    });
+});
 
 
 
-// const borrarArchivoNota = async (filename) => {
-//     try {
-//         const filePath = path.join(__dirname, './uploads/notasVoz', filename);
-//         await fs.promises.unlink(filePath);
-//     } catch (err) {
-//         console.error('Error al eliminar el archivo de nota de voz:', err.message);
-//     }
-// };
 
-// app.delete('/deleteNotaVoz/:id', (req, res) => {
-//     const id = req.params.id;
 
-//     db.query('SELECT nombre_archivo FROM notas_voz WHERE id = ?', [id], async (err, results) => {
-//         if (err) return res.status(500).send('Error en el servidor al buscar la nota');
+const borrarArchivoNota = async (filename) => {
+    try {
+        const filePath = path.join(__dirname, './uploads/notasVoz', filename);
+        await fs.promises.unlink(filePath);
+    } catch (err) {
+        console.error('Error al eliminar el archivo de nota de voz:', err.message);
+    }
+};
 
-//         if (results.length === 0) return res.status(404).send('Nota de voz no encontrada');
+app.delete('/deleteNotaVoz/:id', (req, res) => {
+    const id = req.params.id;
 
-//         const filename = results[0].nombre_archivo;
+    db.query('SELECT nombre_archivo FROM notas_voz WHERE id = ?', [id], async (err, results) => {
+        if (err) return res.status(500).send('Error en el servidor al buscar la nota');
 
-//         await borrarArchivoNota(filename);
+        if (results.length === 0) return res.status(404).send('Nota de voz no encontrada');
 
-//         db.query('DELETE FROM notas_voz WHERE id = ?', [id], (err) => {
-//             if (err) return res.status(500).send('Error al eliminar la nota de la base de datos');
-//             return res.status(200).json({ message: 'Nota de voz eliminada correctamente' });
-//         });
-//     });
-// });
+        const filename = results[0].nombre_archivo;
+
+        await borrarArchivoNota(filename);
+
+        db.query('DELETE FROM notas_voz WHERE id = ?', [id], (err) => {
+            if (err) return res.status(500).send('Error al eliminar la nota de la base de datos');
+            return res.status(200).json({ message: 'Nota de voz eliminada correctamente' });
+        });
+    });
+});
 
 //FIN NOTAS DE VOZ
 
@@ -1395,7 +1395,7 @@ app.post('/GuardarVentas', (req, res) => {
 
 app.get('/generarFactura/:id_reserva', (req, res) => {
     const id = req.params.id_reserva;
-    const numeroFactura = `MB-${new Date().getFullYear()}-${String(id).padStart(6, '0')}`;
+    const numeroFactura = `MB-${id}`;
 
     const q = `
         SELECT r.*, 
@@ -1418,10 +1418,12 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
         }
 
         const reserva = results[0];
+        const nombreCliente = reserva.nombre_cliente.replace(/[^a-zA-Z0-9]/g, '_');
+        const nombreArchivo = `Reserva_de_${nombreCliente}.pdf`;
 
         const doc = new PDFDocument({ margin: 50 });
 
-        res.setHeader('Content-Disposition', `attachment; filename=factura_${numeroFactura}.pdf`);
+        res.setHeader('Content-Disposition', `attachment; filename=${nombreArchivo}`);
         res.setHeader('Content-Type', 'application/pdf');
         doc.pipe(res);
 
@@ -1434,7 +1436,7 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
 
         doc.fillColor('#fff');
 
-        doc.moveDown(8); 
+        doc.moveDown(8);
 
         doc.fontSize(22).font('Helvetica-Bold')
             .text('Master Barber - Factura de Reserva', {
