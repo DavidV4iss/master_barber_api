@@ -1467,7 +1467,7 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
 
         doc.moveDown(2);
         doc.fontSize(15).font('Helvetica-Bold')
-            .text('¡Gracias por confiar en Master Barber! 💈', { align: 'center' });
+            .text('¡Gracias por confiar en Master Barber!', { align: 'center' });
 
         doc.moveDown(2);
         doc.fontSize(10).font('Helvetica')
