@@ -46,20 +46,37 @@ const requestLogger = (req, res, next) => {
 app.use(requestLogger);
 
 
-const db = mysql.createConnection({
-    host: process.env.DB_HOST || "localhost",
-    user: process.env.DB_USER || "root",
-    password: process.env.DB_PASSWORD || "",
-    database: process.env.DB_DATABASE || "master_barber",
-})
+let db;
 
-db.connect((err) => {
-    if (err) {
-        console.log(err);
-    } else {
-        console.log("Conectado a la base de datos");
-    }
-})
+function handleDisconnect() {
+    db = mysql.createConnection({
+        host: process.env.DB_HOST || "localhost",
+        user: process.env.DB_USER || "root",
+        password: process.env.DB_PASSWORD || "",
+        database: process.env.DB_DATABASE || "master_barber",
+    });
+
+    db.connect((err) => {
+        if (err) {
+            console.error("❌ Error al conectar a la base de datos:", err.message);
+            setTimeout(handleDisconnect, 5000); // Reintenta conexión cada 5 segundos
+        } else {
+            console.log("✅ Conectado a la base de datos");
+        }
+    });
+
+    db.on("error", (err) => {
+        console.error("⚠️ Error de conexión MySQL:", err.code);
+        if (err.code === "PROTOCOL_CONNECTION_LOST") {
+            console.log("🔁 Intentando reconectar...");
+            handleDisconnect();
+        } else {
+            throw err;
+        }
+    });
+}
+
+handleDisconnect();
 
 
 // Configuración de transporte de nodemailer para enviar correos electrónicos
