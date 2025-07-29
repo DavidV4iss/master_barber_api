@@ -47,20 +47,19 @@ app.use(requestLogger);
 
 
 const db = mysql.createPool({
-    connectionLimit: 10, // Número de conexiones simultáneas permitidas
+    connectionLimit: 10, 
     host: process.env.DB_HOST || "localhost",
     user: process.env.DB_USER || "root",
     password: process.env.DB_PASSWORD || "",
     database: process.env.DB_DATABASE || "master_barber",
 });
 
-// Probar conexión inicial (opcional)
 db.getConnection((err, connection) => {
     if (err) {
         console.error("❌ Error al conectar a la base de datos:", err.message);
     } else {
         console.log("✅ Conectado a la base de datos con pool");
-        connection.release(); // Liberamos la conexión
+        connection.release(); 
     }
 });
 
