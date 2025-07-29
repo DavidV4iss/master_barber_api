@@ -46,37 +46,25 @@ const requestLogger = (req, res, next) => {
 app.use(requestLogger);
 
 
-let db;
+const db = mysql.createPool({
+    connectionLimit: 10, // Número de conexiones simultáneas permitidas
+    host: process.env.DB_HOST || "localhost",
+    user: process.env.DB_USER || "root",
+    password: process.env.DB_PASSWORD || "",
+    database: process.env.DB_DATABASE || "master_barber",
+});
 
-function handleDisconnect() {
-    db = mysql.createConnection({
-        host: process.env.DB_HOST || "localhost",
-        user: process.env.DB_USER || "root",
-        password: process.env.DB_PASSWORD || "",
-        database: process.env.DB_DATABASE || "master_barber",
-    });
+// Probar conexión inicial (opcional)
+db.getConnection((err, connection) => {
+    if (err) {
+        console.error("❌ Error al conectar a la base de datos:", err.message);
+    } else {
+        console.log("✅ Conectado a la base de datos con pool");
+        connection.release(); // Liberamos la conexión
+    }
+});
 
-    db.connect((err) => {
-        if (err) {
-            console.error("❌ Error al conectar a la base de datos:", err.message);
-            setTimeout(handleDisconnect, 5000); // Reintenta conexión cada 5 segundos
-        } else {
-            console.log("✅ Conectado a la base de datos");
-        }
-    });
 
-    db.on("error", (err) => {
-        console.error("⚠️ Error de conexión MySQL:", err.code);
-        if (err.code === "PROTOCOL_CONNECTION_LOST") {
-            console.log("🔁 Intentando reconectar...");
-            handleDisconnect();
-        } else {
-            throw err;
-        }
-    });
-}
-
-handleDisconnect();
 
 
 // Configuración de transporte de nodemailer para enviar correos electrónicos
@@ -761,15 +749,13 @@ app.post('/actualizarUsuario/:email', upload.single('file'), (req, res) => {
 app.get('/traerUsuarios', (req, res) => {
     db.query('SELECT * FROM usuarios', (err, results) => {
         if (err) {
-            console.log(err);
+            console.log("Error en traerUsuarios:", err);
             return res.status(500).send('Error en el servidor');
         }
-        else {
-            return res.status(200).send(results);
-        }
-    })
-}
-)
+        return res.status(200).send(results);
+    });
+});
+
 
 app.get('/traerUsuario/:email', (req, res) => {
     const email = req.params.email
