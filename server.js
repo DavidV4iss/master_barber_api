@@ -507,7 +507,7 @@ app.get('/GetBarberos/:id', async (req, res) => {
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
     if (!req.file) return res.status(400).send('No se ha subido un archivo');
 
-    const { nombre_usuario, email, contrasena, descripcion } = req.body;
+    const { nombre, email, contrasena, descripcion } = req.body;
     const fotoName = req.file.filename;
 
     if (contrasena.length < 8) {
@@ -520,7 +520,7 @@ app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
         INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
-    const values = [nombre_usuario, email, hashPassword, descripcion, fotoName];
+    const values = [nombre, email, hashPassword, descripcion, fotoName];
 
     try {
         await db.query(q, values);
