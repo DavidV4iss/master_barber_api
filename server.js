@@ -544,6 +544,7 @@ app.put('/UpdateBarberos/:id', uploadBarbero.single('foto'), async (req, res) =>
     const id = req.params.id;
     const { nombre_usuario, email, descripcion } = req.body;
     const nuevaFoto = req.file ? req.file.filename : null;
+    console.log(req.body);
 
     try {
         const resultFoto = await db.query('SELECT foto FROM usuarios WHERE id_usuario = $1 AND id_rol = 2', [id]);
