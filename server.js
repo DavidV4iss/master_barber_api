@@ -507,7 +507,8 @@ app.get('/GetBarberos/:id', async (req, res) => {
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
     if (!req.file) return res.status(400).send('No se ha subido un archivo');
 
-    const { nombre, email, contrasena, descripcion } = req.body;
+    const { nombre_usuario, email, contrasena, descripcion } = req.body;
+    const nombre = nombre_usuario;
     const fotoName = req.file.filename;
 
     if (contrasena.length < 8) {
