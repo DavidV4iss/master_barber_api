@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: masterbarber.cy7sgui0w3vd.us-east-1.rds.amazonaws.com
--- Tiempo de generación: 10-06-2025 a las 04:19:12
+-- Tiempo de generación: 30-07-2025 a las 14:58:37
 -- Versión del servidor: 8.0.41
 -- Versión de PHP: 7.0.33-0ubuntu0.16.04.16
 
@@ -33,7 +33,18 @@ CREATE TABLE `calificaciones` (
   `usuario_id` int NOT NULL,
   `puntuacion` int DEFAULT NULL,
   `comentario` text COLLATE utf8mb4_general_ci
-) ;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `calificaciones`
+--
+
+INSERT INTO `calificaciones` (`id`, `usuario_id`, `puntuacion`, `comentario`) VALUES
+(1, 103, 5, ''),
+(2, 103, 5, ''),
+(3, 103, 5, ''),
+(4, 103, 0, ''),
+(5, 103, 5, '');
 
 -- --------------------------------------------------------
 
@@ -97,6 +108,13 @@ CREATE TABLE `notificaciones` (
   `mensaje` text COLLATE utf8mb4_general_ci NOT NULL,
   `fecha` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `notificaciones`
+--
+
+INSERT INTO `notificaciones` (`id_notificacion`, `cliente_id`, `mensaje`) VALUES
+(78, 64, 'El estado de tu reserva ha sido actualizado a: finalizada. Servicio: Corte premium, Fecha:18/7/2025, 8:00:28');
 
 -- --------------------------------------------------------
 
@@ -181,11 +199,11 @@ CREATE TABLE `usuarios` (
 
 INSERT INTO `usuarios` (`id_usuario`, `nombre_usuario`, `email`, `nit`, `telefono`, `contrasena`, `id_rol`, `user_reset_code`, `user_reset_code_expiration`, `Foto`, `descripcion`) VALUES
 (6, 'ADMINISTRADOR', 'Admin@gmail.com', 1028662004, '3142758305', '$2a$10$gKkjGOeNlRvXzyePlVJq1.r/9Y.F6.f.UROSSUNuM7Sjv1xkZyRo.', 1, NULL, NULL, '1749472486072-MB3.JPG', ''),
-(64, 'Usuario 1', 'Usuario@gmail.com', 1028662003, '3107877174', '$2a$10$T8tSncl7F6gquU0V2FJ1HO/dSe5XUH9nZmT8KmuHqJJPSY4w7ta4S', 3, '157515', '2025-05-14 20:20:34', '1749342707742-LOGO.png', ''),
-(103, 'Fidel', 'fideljoseespi10@gmail.com', 1028662008, '3142758305', '$2a$10$XlUPDnbS9Wwz.PLSy5rLk.1ETw/UNrZqdWJnpajM2jYxUqUpdwJiK', 3, NULL, NULL, NULL, ''),
-(111, 'BARBERO', 'barbero@gmail.com', 0, '', '$2a$10$ZWUAq4p0hH4N5jGj9FhdLucnHPBSmylzQBrZORspKW.YylI5RVqti', 2, NULL, NULL, 'barbero_1748927210558-B1.JPG', 'Cortes Perfilados , Accesoria En Imagen Buen Uso De Las Maquinas Y El Ambinte'),
-(122, 'BarberoDos', 'barbero2@gmail.com', 0, '', '$2a$10$L2vwKMNIkfICANHi/nR3FeZPpy.JSluZNzMn9p70o1h0KCek8JoZe', 2, NULL, NULL, 'barbero_1749528531102-venom.jpg', 'Cortes bellos'),
-(123, 'BARBEROTRES', 'barbero3@gmail.com', 0, '', '$2a$10$0AXMxi2oLHReBqiVh7jkn.GniIfp.LOyTiXzlRhntZJ9PGkldf5Cu', 2, NULL, NULL, 'barbero_1749528566612-B3.JPG', 'Cortes elegantes');
+(64, 'Usuario 1', 'Usuario@gmail.com', 1028662003, '3107877174', '$2a$10$T8tSncl7F6gquU0V2FJ1HO/dSe5XUH9nZmT8KmuHqJJPSY4w7ta4S', 3, '157515', '2025-05-14 20:20:34', NULL, ''),
+(103, 'Fidel', 'fideljoseespi10@gmail.com', 1028662008, '3142758305', '$2a$10$XlUPDnbS9Wwz.PLSy5rLk.1ETw/UNrZqdWJnpajM2jYxUqUpdwJiK', 3, NULL, NULL, '1753807170920-LOGO.png', ''),
+(111, 'DEIBY', 'barbero@gmail.com', 0, '', '$2a$10$ZWUAq4p0hH4N5jGj9FhdLucnHPBSmylzQBrZORspKW.YylI5RVqti', 2, NULL, NULL, 'barbero_1753807050469-Corte8.jpg', 'Cortes Perfilados , Accesoria En Imagen Buen Uso De Las Maquinas Y El Ambinte'),
+(124, 'NIXXON', 'nixon@gmail.com', 0, '', '$2a$10$ZUr/KeJuDfiVzIj4Xxmm3uLXoRzjq9rg/tXjXFsQn8sXEZP/DTMyS', 2, NULL, NULL, 'barbero_1753807097120-MB2.JPG', 'Cortes Perfilados , Accesoria En Imagen Buen Uso De Las Maquinas Y El Ambinte'),
+(125, 'Dilan', 'dilan@gmail.com', 1024336532, '3138975212', '$2a$10$33gCV7QWIQ/s2dAfTP39bOkKQs1Xa/ZsGa0pIX5e0D8gAxSV4Pmja', 3, NULL, NULL, NULL, '');
 
 -- --------------------------------------------------------
 
@@ -296,7 +314,7 @@ ALTER TABLE `ventas`
 -- AUTO_INCREMENT de la tabla `calificaciones`
 --
 ALTER TABLE `calificaciones`
-  MODIFY `id` int NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 --
 -- AUTO_INCREMENT de la tabla `categoria_producto`
 --
@@ -311,17 +329,17 @@ ALTER TABLE `inventario`
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id_notificacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=77;
+  MODIFY `id_notificacion` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=80;
 --
 -- AUTO_INCREMENT de la tabla `reservas`
 --
 ALTER TABLE `reservas`
-  MODIFY `id_reserva` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=167;
+  MODIFY `id_reserva` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=169;
 --
 -- AUTO_INCREMENT de la tabla `usuarios`
 --
 ALTER TABLE `usuarios`
-  MODIFY `id_usuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=124;
+  MODIFY `id_usuario` int NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 --
 -- AUTO_INCREMENT de la tabla `ventas`
 --
