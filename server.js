@@ -507,7 +507,7 @@ app.get('/GetBarberos/:id', async (req, res) => {
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
     if (!req.file) return res.status(400).send('No se ha subido un archivo');
 
-    const { nombre, email, contrasena, descripcion } = req.body;
+    const { nombre_usuario, email, contrasena, descripcion } = req.body;
     const fotoName = req.file.filename;
 
     if (contrasena.length < 8) {
@@ -520,7 +520,7 @@ app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
         INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
-    const values = [nombre, email, hashPassword, descripcion, fotoName];
+    const values = [nombre_usuario, email, hashPassword, descripcion, fotoName];
 
     try {
         await db.query(q, values);
@@ -542,7 +542,7 @@ const borrarFotoBarbero = async (foto) => {
 
 app.put('/UpdateBarberos/:id', uploadBarbero.single('foto'), async (req, res) => {
     const id = req.params.id;
-    const { nombre, email, descripcion } = req.body;
+    const { nombre_usuario, email, descripcion } = req.body;
     const nuevaFoto = req.file ? req.file.filename : null;
 
     try {
@@ -563,7 +563,7 @@ app.put('/UpdateBarberos/:id', uploadBarbero.single('foto'), async (req, res) =>
             SET nombre_usuario = $1, email = $2, descripcion = $3, foto = $4 
             WHERE id_usuario = $5 AND id_rol = 2
         `;
-        const values = [nombre, email, descripcion, nuevaFoto || fotoActual, id];
+        const values = [nombre_usuario, email, descripcion, nuevaFoto || fotoActual, id];
 
         await db.query(q, values);
         res.status(200).send('Barbero actualizado exitosamente');
