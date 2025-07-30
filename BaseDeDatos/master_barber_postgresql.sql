@@ -15,7 +15,7 @@ INSERT INTO rol (id_rol, nombre_rol) VALUES
 
 -- Tabla: usuarios
 CREATE TABLE usuarios (
-    id_usuario SERIAL PRIMARY KEY,
+    id_usuario INTEGER PRIMARY KEY,
     nombre_usuario VARCHAR(255) NOT NULL,
     email VARCHAR(55) NOT NULL,
     nit INTEGER NOT NULL,
@@ -36,27 +36,15 @@ CREATE TABLE calificaciones (
     comentario TEXT
 );
 
-INSERT INTO calificaciones (id, usuario_id, puntuacion, comentario) VALUES
-(1, 103, 5, ''),
-(2, 103, 5, ''),
-(3, 103, 5, ''),
-(4, 103, 0, ''),
-(5, 103, 5, '');
-
 -- Tabla: categoria_producto
 CREATE TABLE categoria_producto (
     id_categoria_producto SERIAL PRIMARY KEY,
     categoria VARCHAR(255) NOT NULL
 );
 
-INSERT INTO categoria_producto (id_categoria_producto, categoria) VALUES
-(1, 'Ropa'),
-(2, 'Accesorios'),
-(3, 'Productos de cuidado personal');
-
 -- Tabla: inventario
 CREATE TABLE inventario (
-    id_producto SERIAL PRIMARY KEY,
+    id_producto INTEGER PRIMARY KEY,
     nombre VARCHAR(255) NOT NULL,
     descripcion_P VARCHAR(255) NOT NULL,
     cantidad INTEGER NOT NULL,
@@ -74,10 +62,6 @@ CREATE TABLE tipo_servicio (
     descripcion_S VARCHAR(255) NOT NULL,
     precio VARCHAR(255) NOT NULL
 );
-
-INSERT INTO tipo_servicio (id_tipo_servicio, nombre, descripcion_S, precio) VALUES
-(1, 'Corte basico', 'Solo corte, sin mascarillas, sin barba y ninguno de otros', '20.000'),
-(2, 'Corte premium', 'Incluye corte, barba, cejas, lineas dependiendo el gusto y mascarillas ', '60.000');
 
 -- Tabla: reservas
 CREATE TABLE reservas (
@@ -108,21 +92,16 @@ CREATE TABLE ventas (
     nombre VARCHAR(255) NOT NULL
 );
 
+-- Inserciones
+INSERT INTO categoria_producto (id_categoria_producto, categoria) VALUES
+(1, 'Ropa'),
+(2, 'Accesorios'),
+(3, 'Productos de cuidado personal');
 
--- Insertar datos en inventario
-INSERT INTO inventario (id_producto, nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, PrecioUnitario, fecha_venta, Foto) VALUES
-(90, 'Atomizador', 'Atomizador', 100, 3, 'Versace', 700000, '2025-06-02 20:24:00', 'inventario_1748916245963-Atomizadorjpg.jpg'),
-(91, 'Locion Desinfectante', 'Desinfecta', 100, 3, 'Versace', 700000, '2025-06-02 21:05:00', 'inventario_1748916320603-LOCION-REFRESCANTEjpg.jpg'),
-(92, 'Gel Para Afeitar', 'Afeitar', 100, 3, 'Coca cola', 700000, '2025-06-02 21:05:00', 'inventario_1748916347177-GEL_PARA_AFEITAR.jpg'),
-(93, 'Maquina Para Barberia', 'Corte Fino', 100, 3, 'Versace', 700000, '2025-06-02 21:06:00', 'inventario_1748916401970-Maquina.jpg'),
-(94, 'Porta Cuchillas', 'Corte Fino', 100, 3, 'Versace', 700000, '2025-06-02 21:07:00', 'inventario_1748916439591-Porta Navajas.jpg'),
-(95, 'Polvos Texturizantes', 'Un Corte Texturizado', 100, 3, 'Versace', 700000, '2025-06-02 21:07:00', 'inventario_1748916480041-texturizante.jpg');
+INSERT INTO tipo_servicio (id_tipo_servicio, nombre, descripcion_S, precio) VALUES
+(1, 'Corte basico', 'Solo corte, sin mascarillas, sin barba y ninguno de otros', '20.000'),
+(2, 'Corte premium', 'Incluye corte, barba, cejas, lineas dependiendo el gusto y mascarillas ', '60.000');
 
--- Insertar datos en notificaciones
-INSERT INTO notificaciones (id_notificacion, cliente_id, mensaje, fecha) VALUES
-(78, 64, 'El estado de tu reserva ha sido actualizado a: finalizada. Servicio: Corte premium, Fecha:18/7/2025, 8:00:28', CURRENT_TIMESTAMP);
-
--- Insertar datos en usuarios
 INSERT INTO usuarios (id_usuario, nombre_usuario, email, nit, telefono, contrasena, id_rol, user_reset_code, user_reset_code_expiration, Foto, descripcion) VALUES
 (6, 'ADMINISTRADOR', 'Admin@gmail.com', 1028662004, '3142758305', '$2a$10$gKkjGOeNlRvXzyePlVJq1.r/9Y.F6.f.UROSSUNuM7Sjv1xkZyRo.', 1, NULL, NULL, '1749472486072-MB3.JPG', ''),
 (64, 'Usuario 1', 'Usuario@gmail.com', 1028662003, '3107877174', '$2a$10$T8tSncl7F6gquU0V2FJ1HO/dSe5XUH9nZmT8KmuHqJJPSY4w7ta4S', 3, '157515', '2025-05-14 20:20:34', NULL, ''),
@@ -131,7 +110,24 @@ INSERT INTO usuarios (id_usuario, nombre_usuario, email, nit, telefono, contrase
 (124, 'NIXXON', 'nixon@gmail.com', 0, '', '$2a$10$ZUr/KeJuDfiVzIj4Xxmm3uLXoRzjq9rg/tXjXFsQn8sXEZP/DTMyS', 2, NULL, NULL, 'barbero_1753807097120-MB2.JPG', 'Cortes Perfilados , Accesoria En Imagen Buen Uso De Las Maquinas Y El Ambinte'),
 (125, 'Dilan', 'dilan@gmail.com', 1024336532, '3138975212', '$2a$10$33gCV7QWIQ/s2dAfTP39bOkKQs1Xa/ZsGa0pIX5e0D8gAxSV4Pmja', 3, NULL, NULL, NULL, '');
 
--- Insertar datos en ventas
+INSERT INTO calificaciones (id, usuario_id, puntuacion, comentario) VALUES
+(1, 103, 5, ''),
+(2, 103, 5, ''),
+(3, 103, 5, ''),
+(4, 103, 0, ''),
+(5, 103, 5, '');
+
+INSERT INTO inventario (id_producto, nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, PrecioUnitario, fecha_venta, Foto) VALUES
+(90, 'Atomizador', 'Atomizador', 100, 3, 'Versace', 700000, '2025-06-02 20:24:00', 'inventario_1748916245963-Atomizadorjpg.jpg'),
+(91, 'Locion Desinfectante', 'Desinfecta', 100, 3, 'Versace', 700000, '2025-06-02 21:05:00', 'inventario_1748916320603-LOCION-REFRESCANTEjpg.jpg'),
+(92, 'Gel Para Afeitar', 'Afeitar', 100, 3, 'Coca cola', 700000, '2025-06-02 21:05:00', 'inventario_1748916347177-GEL_PARA_AFEITAR.jpg'),
+(93, 'Maquina Para Barberia', 'Corte Fino', 100, 3, 'Versace', 700000, '2025-06-02 21:06:00', 'inventario_1748916401970-Maquina.jpg'),
+(94, 'Porta Cuchillas', 'Corte Fino', 100, 3, 'Versace', 700000, '2025-06-02 21:07:00', 'inventario_1748916439591-Porta Navajas.jpg'),
+(95, 'Polvos Texturizantes', 'Un Corte Texturizado', 100, 3, 'Versace', 700000, '2025-06-02 21:07:00', 'inventario_1748916480041-texturizante.jpg');
+
+INSERT INTO notificaciones (id_notificacion, cliente_id, mensaje, fecha) VALUES
+(78, 64, 'El estado de tu reserva ha sido actualizado a: finalizada. Servicio: Corte premium, Fecha:18/7/2025, 8:00:28', CURRENT_TIMESTAMP);
+
 INSERT INTO ventas (id, id_producto, cantidad, fecha, PrecioUnitario, nombre) VALUES
 (163, 90, 1, '2025-06-03 04:18:48', 700000.00, 'Atomizador'),
 (164, 91, 1, '2025-06-03 04:18:48', 700000.00, 'Locion Desinfectante'),
