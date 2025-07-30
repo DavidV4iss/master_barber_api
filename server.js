@@ -292,7 +292,7 @@ const uploadInventario = multer({ storage: storageInventario });
 app.get('/GetInventario', async (req, res) => {
     try {
         const result = await db.query(`
-            SELECT id_producto, nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, PrecioUnitario, Foto, 
+            SELECT id_producto, nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, preciounitario, foto, 
                    TO_CHAR(fecha_venta, 'YYYY-MM-DD HH24:MI') AS fecha_venta 
             FROM inventario
         `);
@@ -317,14 +317,14 @@ app.get('/GetInventario/:id', async (req, res) => {
 
 // Crear un nuevo producto en inventario
 app.post('/CreateInventario', uploadInventario.single('foto'), async (req, res) => {
-    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, PrecioUnitario } = req.body;
+    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
     const fotoName = req.file.filename;
 
     const q = `
-        INSERT INTO inventario (nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, Foto, PrecioUnitario) 
+        INSERT INTO inventario (nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, foto, preciounitario) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
-    const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName, PrecioUnitario];
+    const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName, preciounitario];
 
     try {
         await db.query(q, values);
@@ -348,11 +348,11 @@ const borrarFotoInventario = async (foto) => {
 // Actualizar producto
 app.put('/UpdateInventario/:id', uploadInventario.single('foto'), async (req, res) => {
     const id = req.params.id;
-    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, PrecioUnitario } = req.body;
+    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
     const fotoName = req.file ? req.file.filename : null;
 
     try {
-        const result = await db.query('SELECT Foto FROM inventario WHERE id_producto = $1', [id]);
+        const result = await db.query('SELECT foto FROM inventario WHERE id_producto = $1', [id]);
         const fotoActual = result.rows[0]?.foto;
 
         if (fotoName && fotoActual) {
@@ -362,10 +362,10 @@ app.put('/UpdateInventario/:id', uploadInventario.single('foto'), async (req, re
         const q = `
             UPDATE inventario 
             SET nombre = $1, descripcion_P = $2, cantidad = $3, id_categoria_producto = $4, 
-                proveedor = $5, fecha_venta = $6, Foto = $7, PrecioUnitario = $8 
+                proveedor = $5, fecha_venta = $6, foto = $7, preciounitario = $8 
             WHERE id_producto = $9
         `;
-        const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName || fotoActual, PrecioUnitario, id];
+        const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName || fotoActual, preciounitario, id];
 
         await db.query(q, values);
         res.status(200).send('Producto actualizado exitosamente');
@@ -517,7 +517,7 @@ app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
     const hashPassword = bcrypt.hashSync(contrasena, 10);
 
     const q = `
-        INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, Foto, id_rol) 
+        INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
     const values = [nombre, email, hashPassword, descripcion, fotoName];
@@ -546,7 +546,7 @@ app.put('/UpdateBarberos/:id', uploadBarbero.single('foto'), async (req, res) =>
     const nuevaFoto = req.file ? req.file.filename : null;
 
     try {
-        const resultFoto = await db.query('SELECT Foto FROM usuarios WHERE id_usuario = $1 AND id_rol = 2', [id]);
+        const resultFoto = await db.query('SELECT foto FROM usuarios WHERE id_usuario = $1 AND id_rol = 2', [id]);
 
         if (resultFoto.rows.length === 0) {
             return res.status(404).send('Barbero no encontrado');
@@ -560,7 +560,7 @@ app.put('/UpdateBarberos/:id', uploadBarbero.single('foto'), async (req, res) =>
 
         const q = `
             UPDATE usuarios 
-            SET nombre_usuario = $1, email = $2, descripcion = $3, Foto = $4 
+            SET nombre_usuario = $1, email = $2, descripcion = $3, foto = $4 
             WHERE id_usuario = $5 AND id_rol = 2
         `;
         const values = [nombre, email, descripcion, nuevaFoto || fotoActual, id];
@@ -628,7 +628,7 @@ app.post('/actualizarUsuario/:email', upload.single('file'), async (req, res) =>
         }
 
         if (file) {
-            setParts.push('Foto = $' + (queryValues.length + 1));
+            setParts.push('foto = $' + (queryValues.length + 1));
             queryValues.push(file.filename);
         }
 
@@ -964,7 +964,42 @@ app.put('/UpdateReservasEstado/:id', async (req, res) => {
             from: 'cristianrueda0313@gmail.com',
             to: email,
             subject: 'Actualización del estado de tu reserva',
-            html: `<div>...contenido de email...</div>`
+            html: `
+                        <div style="max-width: 600px; margin: auto; background-color: #ffffff; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 30px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; color: #333;">
+  <h2 style="color: #2c3e50; margin-bottom: 20px;">✨ Actualización de tu Reserva</h2>
+
+  <p style="font-size: 16px; margin-bottom: 15px;">Hola,</p>
+
+  <p style="font-size: 16px; margin-bottom: 20px;">
+    Te informamos que el estado de tu reserva ha sido actualizado a:
+    <strong style="color: #27ae60;">${nuevoEstado}</strong>.
+  </p>
+
+  <div style="background-color: #f4f6f8; border-left: 4px solid #27ae60; padding: 15px 20px; margin-bottom: 20px; border-radius: 5px;">
+    <p style="margin: 0; font-size: 15px;">
+      <strong>🛠 Servicio:</strong> ${servicioNombre}<br>
+      <strong>📅 Fecha:</strong> ${new Date(reserva.fecha).toLocaleString()}
+    </p>
+  </div>
+
+  <p style="font-size: 15px; margin-bottom: 10px;">Gracias por confiar en <strong>Master Barber</strong>.</p>
+  <p style="font-size: 16px; font-weight: bold; color: #2c3e50;">¡Te esperamos!</p>
+
+  <div style="text-align: center; margin-top: 20px;">
+    <a href="https://tusitio.com/reservas" target="_blank" style="display: inline-block; background-color: #27ae60; color: #fff; padding: 12px 20px; border-radius: 6px; text-decoration: none; font-weight: bold; font-size: 14px;">
+      Ver mis reservas
+    </a>
+  </div>
+
+  <hr style="margin: 30px 0; border: none; border-top: 1px solid #eaeaea;" />
+
+  <p style="font-size: 12px; text-align: center; color: #999;">
+    Este mensaje fue enviado automáticamente. Por favor, no respondas a este correo.
+  </p>
+</div>
+
+
+                    `
         };
 
         transporter.sendMail(mailOptions, async (error) => {
@@ -1101,11 +1136,11 @@ app.post('/GuardarVentas', async (req, res) => {
         v.id_producto,
         v.cantidad,
         v.fecha,
-        v.PrecioUnitario,
+        v.preciounitario,
         v.nombre
     ]);
 
-    const query = `INSERT INTO ventas (id_producto, cantidad, fecha, PrecioUnitario, nombre) VALUES ${values}`;
+    const query = `INSERT INTO ventas (id_producto, cantidad, fecha, preciounitario, nombre) VALUES ${values}`;
 
     try {
         await db.query(query, flatParams);

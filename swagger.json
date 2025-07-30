@@ -181,7 +181,7 @@
                 "fecha_venta": {
                   "example": "any"
                 },
-                "PrecioUnitario": {
+                "preciounitario": {
                   "example": "any"
                 }
               }
@@ -232,7 +232,7 @@
                 "fecha_venta": {
                   "example": "any"
                 },
-                "PrecioUnitario": {
+                "preciounitario": {
                   "example": "any"
                 }
               }
