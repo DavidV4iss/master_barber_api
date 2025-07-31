@@ -513,7 +513,7 @@ app.get('/GetBarberos/:id', async (req, res) => {
 });
 
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
-    const { nombre, email, contrasena, descripcion } = req.body;
+    const { nombre_usuario, email, contrasena, descripcion } = req.body;
     const fotoUrl = req.file?.path || null;
 
     // Validar contraseña
@@ -528,7 +528,7 @@ app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
         INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
-    const values = [nombre, email, hashPassword, descripcion, fotoUrl];
+    const values = [nombre_usuario, email, hashPassword, descripcion, fotoUrl];
 
     console.log('📤 Valores a insertar:', values);
 
