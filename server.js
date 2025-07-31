@@ -14,6 +14,8 @@ const { file } = require('pdfkit');
 const port = 8080;
 const PDFDocument = require('pdfkit');
 const { Pool } = require('pg');
+const cloudinary = require('cloudinary').v2;
+const { CloudinaryStorage } = require('multer-storage-cloudinary');
 
 
 require('dotenv').config();
@@ -57,6 +59,13 @@ const db = new Pool({
 db.connect()
     .then(() => console.log("✅ Conectado a PostgreSQL"))
     .catch((err) => console.error("❌ Error al conectar a PostgreSQL:", err.message));
+
+
+cloudinary.config({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET
+});
 
 
 
@@ -278,15 +287,15 @@ app.post('/EnvEmail', async (req, res) => {
 
 //INVENTARIO
 
-const storageInventario = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/ImagesInventario');
-    },
-    filename: function (req, file, cb) {
-        cb(null, `inventario_${Date.now()}-${file.originalname}`);
+const storageInventario = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'inventario',
+        allowed_formats: ['jpg', 'jpeg', 'png']
     }
 });
 const uploadInventario = multer({ storage: storageInventario });
+
 
 // Obtener todo el inventario
 app.get('/GetInventario', async (req, res) => {
@@ -472,16 +481,15 @@ app.post('/Cambiarpasscod', async (req, res) => {
 
 
 // CRUD DEL BARBERO
-const storageBarbero = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/imagesBarbero/')
-    },
-    filename: function (req, file, cb) {
-        cb(null, `barbero_${Date.now()}-${file.originalname}`)
+const storageBarbero = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'barberos',
+        allowed_formats: ['jpg', 'jpeg', 'png']
     }
 });
-
 const uploadBarbero = multer({ storage: storageBarbero });
+
 
 app.get('/GetBarberos', async (req, res) => {
     try {
@@ -505,13 +513,8 @@ app.get('/GetBarberos/:id', async (req, res) => {
 });
 
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
-    // Mostrar lo que llega
-    console.log('📥 Body recibido:', req.body);
-    console.log('🖼️ Archivo recibido:', req.file);
-
-    const { nombre_usuario, email, contrasena, descripcion } = req.body;
-    const nombre = nombre_usuario;
-    const fotoName = req.file?.filename || null; // 👈 ahora es opcional
+    const { nombre, email, contrasena, descripcion } = req.body;
+    const fotoUrl = req.file?.path || null;
 
     // Validar contraseña
     if (!contrasena || contrasena.length < 8) {
@@ -525,7 +528,7 @@ app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
         INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
-    const values = [nombre, email, hashPassword, descripcion, fotoName];
+    const values = [nombre, email, hashPassword, descripcion, fotoUrl];
 
     console.log('📤 Valores a insertar:', values);
 
@@ -606,15 +609,13 @@ app.delete('/DeleteBarberos/:id', async (req, res) => {
 
 
 //Perfil USUARIO
-const storage = multer.diskStorage({
-    destination: function (req, file, cb) {
-        cb(null, './uploads/perfil/');
-    },
-    filename: function (req, file, cb) {
-        cb(null, Date.now() + '-' + file.originalname);
+const storage = new CloudinaryStorage({
+    cloudinary: cloudinary,
+    params: {
+        folder: 'perfiles',
+        allowed_formats: ['jpg', 'jpeg', 'png']
     }
 });
-
 const upload = multer({ storage: storage });
 
 app.post('/actualizarUsuario/:email', upload.single('file'), async (req, res) => {
