@@ -324,16 +324,15 @@ app.get('/GetInventario/:id', async (req, res) => {
     }
 });
 
-// Crear un nuevo producto en inventario
 app.post('/CreateInventario', uploadInventario.single('foto'), async (req, res) => {
-    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
+    const { nombre, descripcion_p, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
     const fotoName = req.file.filename;
 
     const q = `
-        INSERT INTO inventario (nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, foto, preciounitario) 
+        INSERT INTO inventario (nombre, descripcion_p, cantidad, id_categoria_producto, proveedor, fecha_venta, foto, preciounitario) 
         VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
     `;
-    const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName, preciounitario];
+    const values = [nombre, descripcion_p, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName, preciounitario];
 
     try {
         await db.query(q, values);
@@ -347,17 +346,16 @@ app.post('/CreateInventario', uploadInventario.single('foto'), async (req, res) 
 // Eliminar imagen del servidor
 const borrarFotoInventario = async (foto) => {
     try {
-        const filePath = path.resolve(__dirname, `./uploads/ImagesInventario/${foto}`);
+        const filePath = path.resolve(__dirname, `${foto}`);
         await fs.promises.unlink(filePath);
     } catch (err) {
         console.error('Error eliminando imagen:', err);
     }
 };
 
-// Actualizar producto
 app.put('/UpdateInventario/:id', uploadInventario.single('foto'), async (req, res) => {
     const id = req.params.id;
-    const { nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
+    const { nombre, descripcion_p, cantidad, id_categoria_producto, proveedor, fecha_venta, preciounitario } = req.body;
     const fotoName = req.file ? req.file.filename : null;
 
     try {
@@ -370,11 +368,11 @@ app.put('/UpdateInventario/:id', uploadInventario.single('foto'), async (req, re
 
         const q = `
             UPDATE inventario 
-            SET nombre = $1, descripcion_P = $2, cantidad = $3, id_categoria_producto = $4, 
+            SET nombre = $1, descripcion_p = $2, cantidad = $3, id_categoria_producto = $4, 
                 proveedor = $5, fecha_venta = $6, foto = $7, preciounitario = $8 
             WHERE id_producto = $9
         `;
-        const values = [nombre, descripcion_P, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName || fotoActual, preciounitario, id];
+        const values = [nombre, descripcion_p, cantidad, id_categoria_producto, proveedor, fecha_venta, fotoName || fotoActual, preciounitario, id];
 
         await db.query(q, values);
         res.status(200).send('Producto actualizado exitosamente');
@@ -384,7 +382,6 @@ app.put('/UpdateInventario/:id', uploadInventario.single('foto'), async (req, re
     }
 });
 
-// Eliminar producto
 app.delete('/DeleteInventario/:id', async (req, res) => {
     const id = req.params.id;
     try {
@@ -396,7 +393,6 @@ app.delete('/DeleteInventario/:id', async (req, res) => {
     }
 });
 
-// Restar inventario
 app.put('/RestarInventario/:id', async (req, res) => {
     const id = req.params.id;
     const cantidad = req.body.cantidad;
@@ -410,7 +406,6 @@ app.put('/RestarInventario/:id', async (req, res) => {
     }
 });
 
-// Obtener categorías
 app.get('/categorias', async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM categoria_producto');
