@@ -673,7 +673,22 @@ app.get('/traerUsuarios', async (req, res) => {
 app.get('/traerUsuario/:email', async (req, res) => {
     const email = req.params.email;
     try {
-        const result = await db.query('SELECT * FROM usuarios WHERE email = $1', [email]);
+        const result = await db.query(`
+  SELECT 
+    id_usuario, 
+    nombre_usuario, 
+    email, 
+    nit, 
+    telefono, 
+    contrasena, 
+    id_rol, 
+    user_reset_code, 
+    user_reset_code_expiration, 
+     foto,
+    descripcion 
+  FROM usuarios 
+  WHERE email = $1
+`, [email]);
         res.status(200).send(result.rows);
     } catch (err) {
         console.error(err);
@@ -1057,7 +1072,6 @@ app.delete('/DeleteReserva/:id', async (req, res) => {
         res.status(500).send('Error al eliminar la reserva');
     }
 });
-
 // Fin Reservas
 
 
