@@ -505,32 +505,47 @@ app.get('/GetBarberos/:id', async (req, res) => {
 });
 
 app.post('/CreateBarberos', uploadBarbero.single('foto'), async (req, res) => {
-    if (!req.file) return res.status(400).send('No se ha subido un archivo');
+    // Verifica si se recibió el archivo correctamente
+    if (!req.file) {
+        console.log('❌ No se recibió archivo');
+        return res.status(400).send('No se ha subido un archivo');
+    }
+
+    // Muestra qué campos llegaron del frontend
+    console.log('📥 Body recibido:', req.body);
+    console.log('🖼️ Archivo recibido:', req.file);
 
     const { nombre_usuario, email, contrasena, descripcion } = req.body;
     const nombre = nombre_usuario;
     const fotoName = req.file.filename;
 
-    if (contrasena.length < 8) {
+    // Validar longitud de contraseña
+    if (!contrasena || contrasena.length < 8) {
+        console.log('❌ Contraseña muy corta o vacía');
         return res.status(400).send('La contraseña debe tener al menos 8 caracteres');
     }
 
     const hashPassword = bcrypt.hashSync(contrasena, 10);
 
+    // Prepara consulta y datos
     const q = `
         INSERT INTO usuarios (nombre_usuario, email, contrasena, descripcion, foto, id_rol) 
         VALUES ($1, $2, $3, $4, $5, 2)
     `;
     const values = [nombre, email, hashPassword, descripcion, fotoName];
 
+    console.log('📤 Valores a insertar:', values);
+
     try {
         await db.query(q, values);
+        console.log('✅ Barbero insertado correctamente');
         res.status(200).send('Barbero creado exitosamente');
     } catch (err) {
-        console.error(err);
+        console.error('❌ ERROR AL INSERTAR BARBERO:', err);
         res.status(500).send('Error en el servidor');
     }
 });
+
 
 const borrarFotoBarbero = async (foto) => {
     try {
