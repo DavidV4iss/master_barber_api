@@ -1278,7 +1278,7 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.send("Api de master barber :)");
+    res.send("Estamos Al Aire Bobo Hp, Revise Y Vera Que Todo Esta Bien, Si No, Pues Cagada Mani, No Sabes Programar, No Sabes Administrar, No Sabes Nada, Bobo Hp, Que Te Vaya Bien, Gracias Por Usar Master Barber 👍👍👍👍👍👍👍👍👍👍");
 });
 
 function getLocalIP() {
