@@ -1283,7 +1283,7 @@ app.get('/', (req, res) => {
         <html lang="es">
         <head>
             <meta charset="UTF-8">
-            <title>Master Barber</title>
+            <title> Mensaje Emotivo </title>
             <style>
                 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
 
