@@ -1278,8 +1278,74 @@ app.get('/generarFactura/:id_reserva', (req, res) => {
 
 
 app.get('/', (req, res) => {
-    res.send("Estamos Al Aire Bobo Hp, Revise Y Vera Que Todo Esta Bien, Si No, Pues Cagada Mani, No Sabes Programar, No Sabes Administrar, No Sabes Nada, Bobo Hp, Que Te Vaya Bien, Gracias Por Usar Master Barber 👍👍👍👍👍👍👍👍👍👍");
+    res.send(`
+        <!DOCTYPE html>
+        <html lang="es">
+        <head>
+            <meta charset="UTF-8">
+            <title>Master Barber</title>
+            <style>
+                @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@700&display=swap');
+
+                body {
+                    margin: 0;
+                    height: 100vh;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    flex-direction: column;
+                    font-family: 'Montserrat', sans-serif;
+                    color: white;
+                    background: linear-gradient(-45deg, #ff512f, #dd2476, #24c6dc, #514a9d);
+                    background-size: 400% 400%;
+                    animation: gradient 12s ease infinite;
+                    text-align: center;
+                }
+
+                @keyframes gradient {
+                    0% { background-position: 0% 50%; }
+                    50% { background-position: 100% 50%; }
+                    100% { background-position: 0% 50%; }
+                }
+
+                h1 {
+                    font-size: 3rem;
+                    text-shadow: 2px 2px 8px rgba(0,0,0,0.6);
+                    margin-bottom: 20px;
+                }
+
+                p {
+                    font-size: 1.3rem;
+                    max-width: 700px;
+                    line-height: 1.6;
+                    text-shadow: 1px 1px 5px rgba(0,0,0,0.5);
+                }
+
+                .emoji {
+                    font-size: 2rem;
+                    margin-top: 15px;
+                    animation: bounce 1.5s infinite;
+                }
+
+                @keyframes bounce {
+                    0%, 100% { transform: translateY(0); }
+                    50% { transform: translateY(-10px); }
+                }
+            </style>
+        </head>
+        <body>
+            <h1>Estamos Al Aire 🎉</h1>
+            <p>
+                Bobo Hp, revise y verá que todo está bien.<br>
+                Si no, pues cagada, mani... no sabes programar, no sabes administrar, no sabes nada.<br>
+                Que te vaya bien, gracias por usar <strong>Master Barber</strong>.
+            </p>
+            <div class="emoji">👍👍👍👍👍👍👍👍👍👍</div>
+        </body>
+        </html>
+    `);
 });
+
 
 function getLocalIP() {
     const interfaces = os.networkInterfaces();
@@ -1303,4 +1369,3 @@ app.listen(port, '0.0.0.0', () => {
 });
 
 
-// CAMBIAR PATCH DE /CancelarReservaCliente/:id Y '/UpdateReservasEstado/:id' A PUT PERO EN EL FRONTEND
